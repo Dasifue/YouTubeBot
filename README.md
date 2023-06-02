@@ -1,0 +1,1 @@
+YouTube bot is a very simple telegram bot. Main idea is to create a free service, each can help me or someone (firstly I want to create bot for selfusing) to download YouTube material without problems or fear to catch something bad.
