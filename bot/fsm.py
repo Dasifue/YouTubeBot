@@ -3,8 +3,20 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from .markups import types_markup, resolutions_markup
-from .utils import find_resolutions, find_video
+from .markups import (
+    types_markup, 
+    resolutions_markup,
+    )
+
+from .utils import (
+    find_resolutions, 
+    find_video, 
+    download_video, 
+    download_audio, 
+    send_audio, 
+    send_video,
+    delete_file,
+    )
 
 class FSM(StatesGroup):
     ulr = State()
@@ -46,16 +58,23 @@ async def set_type(call: types.CallbackQuery, state: FSMContext):
     else:
         async with state.proxy() as data:
             data["resolution"] = None
-            await call.message.answer(str(data))
+            video = find_video(data["url"])
+        file_path = download_audio(video)   
+        await send_audio(call.message, file_path)   
+        delete_file(file_path)
         await state.finish()
 
 
 async def set_resolution(call: types.CallbackQuery, state: FSMContext):
     resolution = call.data.split("-")[1]
     async with state.proxy() as data:
-        data["resolution"] = resolution        
-        await call.message.answer(str(data))
+        data["resolution"] = resolution      
+        video = find_video(data["url"])
+    file_path = download_video(video, resolution)  
+    await send_video(call.message, file_path)
+    delete_file(file_path)
     await state.finish()
+
 
 
 def register_handlers(dp: Dispatcher):

@@ -1,3 +1,4 @@
+from aiogram import types
 from pytube import YouTube
 import logging
 import os
@@ -44,6 +45,8 @@ def download_video(video: YouTube, resolution: str):
         filename=f"{data['title']}.mp4",
     )
 
+    return f"downloads/{data['title']}.mp4"
+
 
 def download_audio(video: YouTube):
     data = get_video_info(video)
@@ -55,6 +58,17 @@ def download_audio(video: YouTube):
         filename=f"{data['title']}.mp3",
     )
 
+    return f"downloads/{data['title']}.mp3"
+
+
+async def send_audio(message: types.Message, file_path: str):
+    with open(file_path, "rb") as file:
+        await message.reply_audio(file)
+
+async def send_video(message: types.Message, file_path: str):
+    with open(file_path, "rb") as file:
+        await message.reply_video(file)
+    
 
 def delete_file(file_path):
-    os.delete_file(file_path)
+    os.remove(file_path)
