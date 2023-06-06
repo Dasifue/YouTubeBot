@@ -1,4 +1,4 @@
-from aiogram import types
+from aiogram import types, exceptions
 from pytube import YouTube
 import logging
 import os
@@ -66,12 +66,18 @@ def download_audio(video: YouTube):
 
 async def send_audio(message: types.Message, file_path: str):
     with open(file_path, "rb") as file:
-        await message.reply_audio(file)
+        try:
+            await message.reply_audio(file)
+        except exceptions.NetworkError:
+            await message.reply("Sorry! File too large for uploading")
+
 
 async def send_video(message: types.Message, file_path: str):
     with open(file_path, "rb") as file:
-        await message.reply_video(file)
-    
+        try:
+            await message.reply_video(file)
+        except exceptions.NetworkError:
+            await message.reply("Sorry! File too large for uploading")
 
 def delete_file(file_path):
     os.remove(file_path)
