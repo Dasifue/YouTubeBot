@@ -7,6 +7,10 @@ logging.basicConfig(level=logging.INFO)
 video_streams = lambda video: video.streams.filter(progressive=True, file_extension="mp4", type="video")
 audio_streams = lambda video: video.streams.filter(only_audio=True)
 
+def wrong_url(url: str) -> bool:
+    return not url.startswith("https://www.youtube.com/watch?v=")
+
+
 def find_video(url: str):
     video = YouTube(url=url, use_oauth=True, allow_oauth_cache=True)
     if video.check_availability():
@@ -52,7 +56,6 @@ def download_audio(video: YouTube):
     data = get_video_info(video)
     auido = audio_streams(video).first()
 
-    print(auido)
     auido.download(
         output_path="downloads/",
         filename=f"{data['title']}.mp3",
