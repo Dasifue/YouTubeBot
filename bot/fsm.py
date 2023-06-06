@@ -107,7 +107,7 @@ async def break_states_by_message(message: types.CallbackQuery, state: FSMContex
         await send_main_markup(message)
 
 def register_handlers(dp: Dispatcher):
-    dp.register_message_handler(break_states_by_message, commands=["cancel"], state="*")
+    dp.register_message_handler(break_states_by_message, commands=["cancel", "stop"], state="*")
     dp.register_callback_query_handler(break_states_by_call, lambda call: call.data=="break_states", state="*")
     dp.register_callback_query_handler(fsm_start, lambda call: call.data=="download", state=None)
     dp.register_message_handler(set_url, content_types=types.ContentType.TEXT, state=FSM.url)

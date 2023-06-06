@@ -8,8 +8,9 @@ video_streams = lambda video: video.streams.filter(progressive=True, file_extens
 audio_streams = lambda video: video.streams.filter(only_audio=True)
 
 def wrong_url(url: str) -> bool:
-    return not url.startswith("https://www.youtube.com/watch?v=")
-
+    if url.startswith("https://www.youtube.com/watch?v=") or url.startswith("https://youtu.be"):
+        return False
+    return True
 
 def find_video(url: str):
     video = YouTube(url=url, use_oauth=True, allow_oauth_cache=True)
