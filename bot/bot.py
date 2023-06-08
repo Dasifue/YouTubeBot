@@ -1,6 +1,6 @@
 from aiogram import types, Dispatcher
 
-from .markups import main_markup
+from .utils import main_markup
 
 async def welcome_message(message: types.Message):
     markup = main_markup()

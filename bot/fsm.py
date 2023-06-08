@@ -3,11 +3,6 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from .markups import (
-    types_markup, 
-    resolutions_markup,
-    )
-
 from .utils import (
     find_resolutions, 
     find_video, 
@@ -16,7 +11,10 @@ from .utils import (
     send_audio, 
     send_video,
     delete_file,
-    wrong_url
+    wrong_url,
+
+    types_markup, 
+    resolutions_markup,
     )
 
 from .bot import send_main_markup
@@ -69,7 +67,7 @@ async def set_type(call: types.CallbackQuery, state: FSMContext):
         markup = resolutions_markup(resolutions)
         await call.message.edit_text("Choise resolution", reply_markup=markup)
     else:
-        await call.message.edit_text("Wait for minute...")
+        await call.message.edit_text("Wait for a minute...")
         async with state.proxy() as data:
             data["resolution"] = None
             video = find_video(data["url"])
@@ -82,7 +80,7 @@ async def set_type(call: types.CallbackQuery, state: FSMContext):
 
 
 async def set_resolution(call: types.CallbackQuery, state: FSMContext):
-    await call.message.edit_text("Wait for minute...")
+    await call.message.edit_text("Wait for a minute...")
     resolution = call.data.split("-")[1]
     async with state.proxy() as data:
         data["resolution"] = resolution      

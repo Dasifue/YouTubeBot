@@ -37,3 +37,9 @@ def resolutions_markup(resolutions):
     markup.add(stop_btn)
     return markup
 
+__all__ = [
+    'main_markup',
+    'types_markup',
+    'resolutions_markup'
+]
+

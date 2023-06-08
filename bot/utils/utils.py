@@ -70,7 +70,7 @@ async def send_audio(message: types.Message, file_path: str):
         try:
             await message.reply_audio(file)
         except exceptions.NetworkError:
-            await message.reply("Sorry! File too large for uploading")
+            await message.reply("Sorry! File too large for uploading. Try to use less resolution")
 
 
 async def send_video(message: types.Message, file_path: str):
@@ -82,3 +82,17 @@ async def send_video(message: types.Message, file_path: str):
 
 def delete_file(file_path):
     os.remove(file_path)
+
+
+
+
+__all__ = [
+    'wrong_url',
+    'find_video',
+    'find_resolutions',
+    'download_video',
+    'download_audio',
+    'send_audio',
+    'send_video',
+    'delete_file',
+]
