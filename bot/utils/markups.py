@@ -50,7 +50,9 @@ def messages_managing_markup():
 
 def messages_list_markup(messages_list):
     markup = InlineKeyboardMarkup(row_width=1)
+    back_button = InlineKeyboardButton("Back", callback_data="back_to_managing")
     buttons = [InlineKeyboardButton(message.text[:21], callback_data=f"get_message_{message.id}") for message in messages_list]
+    buttons.insert(0, back_button)
     markup.add(*buttons)
     return markup
 
@@ -60,6 +62,7 @@ def message_managing_markup(message_id):
     buttons = [
         InlineKeyboardButton(text="Edit message", callback_data=f"edit_message_{message_id}"),
         InlineKeyboardButton(text="Delete message", callback_data=f"delete_message_{message_id}"),
+        InlineKeyboardButton(text="Back", callback_data=f"back_to_managing")
     ]
     markup.add(*buttons)
     return markup

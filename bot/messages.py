@@ -19,6 +19,9 @@ from .database import (
 )
 
 
+
+
+
 async def messages_managing(call: types.CallbackQuery):
     markup = messages_managing_markup()
     text = "Here you can manage your messages"
@@ -47,6 +50,11 @@ async def message_managing(call: types.CallbackQuery):
 
 
 
+
+
+
+
+
 async def pre_edit_message(call: types.CallbackQuery, state: FSMContext):
     await EditMessageFSM.message.set()
     message_id = call.data.replace("edit_message_", "")
@@ -69,6 +77,12 @@ async def edit_message(message: types.Message, state: FSMContext):
     markup = messages_managing_markup()
     text = "Message manager"
     await message.answer(text, reply_markup=markup)
+
+
+
+
+
+
 
 
 
@@ -100,6 +114,13 @@ async def create_message(message: types.Message, state: FSMContext):
 
 
 
+
+
+
+
+
+
+
 async def delete_message(call: types.CallbackQuery, state: FSMContext):
     message_id = call.data.replace("delete_message_", "")
     drop_message(engine=ENGINE, message_id=message_id)
@@ -109,13 +130,37 @@ async def delete_message(call: types.CallbackQuery, state: FSMContext):
 
 
 
+
+async def back_to_message_managing(call: types.CallbackQuery, state: FSMContext):
+    await state.finish()
+    markup = messages_managing_markup()
+    text = "Here you can manage your messages"
+    await call.message.edit_text(text, reply_markup=markup)
+
+
+
+
+
 def register_handlers(dp: Dispatcher):
+    #Manage and listing
     dp.register_callback_query_handler(messages_managing, lambda call: call.data=="messages")
     dp.register_callback_query_handler(messages_list, lambda call: call.data=="user_messages")
     dp.register_callback_query_handler(message_managing, lambda call: call.data.startswith("get_message_"))
-    dp.register_callback_query_handler(delete_message, lambda call: call.data.startswith("delete_message_"), state="*")
+
+
+    #Message creating
     dp.register_callback_query_handler(pre_create_message, lambda call: call.data=="create_message", state="*")
     dp.register_message_handler(create_message, content_types=types.ContentType.TEXT, state=CreateMessageFSM.text)
+
+
+    #Message updating
     dp.register_callback_query_handler(pre_edit_message, lambda call: call.data.startswith("edit_message_"), state="*")
     dp.register_message_handler(edit_message, content_types=types.ContentType.TEXT, state=EditMessageFSM.text)
+
+    #Message deleting
+    dp.register_callback_query_handler(delete_message, lambda call: call.data.startswith("delete_message_"), state="*")
+
+
+    #Message managing
+    dp.register_callback_query_handler(back_to_message_managing, lambda call: call.data=="back_to_managing", state="*")
 
