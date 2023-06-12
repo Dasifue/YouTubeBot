@@ -4,31 +4,20 @@ from dotenv import load_dotenv
 
 import os
 import bot
-import database
 load_dotenv(".env")
 
 storage = MemoryStorage()
 my_bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher(my_bot, storage=storage)
 
-USER = os.getenv("db_ADMIN")
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
-PASSWORD = os.getenv("PASSWORD")
-DATABASE = os.getenv("DATABASE")
 
 bot.bot_handlers(dp)
 bot.fsm_handlers(dp)
+bot.message_handlers(dp)
 
-engine = database.create_mysql_engine(
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-        database=DATABASE
-    )    
+  
 
 if __name__ == "__main__":
-    database.create_tables(engine)
+    bot.database.create_tables(bot.database.ENGINE)
     executor.start_polling(dp, skip_updates=True)
     

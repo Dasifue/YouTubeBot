@@ -1,12 +1,7 @@
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from .models import Base, User, Message
-
-
-def create_mysql_engine(user, password, host, port, database):
-    engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{int(port)}/{database}")
-    return engine
+from .models import Base, User, Message, MessageStatus
 
 
 def create_tables(engine):
@@ -44,7 +39,7 @@ def insert_message(engine, data):
 
 def change_message_text(engine, data):
     with Session(engine) as session:
-        message = select(Message).where(Message.id==data["id"])
+        message = select(Message).where(Message.id==data["message"])
         message = session.scalars(message).one()
         message.text = data["text"]
         session.commit()
@@ -54,13 +49,22 @@ def change_message_text(engine, data):
 def get_user_messages(engine, user_tg_id):
     with Session(engine) as session:
         messages = select(Message).where(Message.user_tg_id==user_tg_id)
-        messages = session.scalars(messages)
-        return messages
+        messages = session.scalars(messages).fetchall()
+    return messages
 
 
 def get_message(engine, message_id):
     with Session(engine) as session:
         message = select(Message).where(Message.id==message_id)
         message = session.scalars(message).one()
-        return message
+    return message
     
+
+def delete_message(engine, message_id):
+    with Session(engine) as session:
+        message = select(Message).where(Message.id==message_id, Message.status==MessageStatus.InQueue)
+        message = session.scalar(message)
+        session.delete(message)
+        session.commit()
+    
+

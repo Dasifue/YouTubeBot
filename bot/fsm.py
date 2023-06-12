@@ -25,6 +25,14 @@ class FSM(StatesGroup):
     resolution = State()
 
 
+class CreateMessageFSM(StatesGroup):
+    text = State()
+
+class EditMessageFSM(StatesGroup):
+    message = State()
+    text = State()
+
+
 
 async def fsm_start(call: types.CallbackQuery):
     await FSM.url.set()
