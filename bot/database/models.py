@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy import String, Integer, Text, DateTime, Column
+from sqlalchemy import String, Integer, Text, DateTime, Column, Boolean
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import relationship
 
 from enum import Enum
 
@@ -41,3 +42,13 @@ class Message(Base):
     def __str__(self):
         return f"{self.id}//{self.user_tg_id}//{self.text}"
 
+
+
+class Admin(Base):
+    __tablename__ = "admin"
+    id = Column(Integer, ForeignKey('user.telegram_id'), primary_key=True)
+    user = relationship(User, backref="admin")
+    email = Column(String(255), nullable=False)
+
+    def __str__(self):
+        return f"{self.id}//{self.email}"

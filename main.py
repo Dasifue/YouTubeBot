@@ -14,6 +14,7 @@ dp = Dispatcher(my_bot, storage=storage)
 bot.bot_handlers(dp)
 bot.fsm_handlers(dp)
 bot.message_handlers(dp)
+bot.admin_handlers(dp)
 
   
 

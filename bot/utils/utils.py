@@ -1,7 +1,13 @@
-from aiogram import types, exceptions
+from aiogram import types, exceptions, Bot
 from pytube import YouTube
+from dotenv import load_dotenv
 import logging
 import os
+
+from ..database import get_message_author, get_message, ENGINE
+
+
+load_dotenv(".env")
 
 logging.basicConfig(level=logging.INFO)
 video_streams = lambda video: video.streams.filter(progressive=True, file_extension="mp4", type="video")
@@ -84,6 +90,23 @@ def delete_file(file_path):
     os.remove(file_path)
 
 
+async def send_answer(data):
+    print(data)
+    author = get_message_author(engine=ENGINE, message_id=data["message_id"])
+    message = get_message(engine=ENGINE, message_id=data["message_id"])
+    answer = data["answer"]
+    text = f"""
+    Hello! Here an answer of your message: 
+    {message.text}
+
+    {answer}
+    """
+
+    print(author)
+
+    bot = Bot(os.getenv("BOT_TOKEN"))
+    await bot.send_message(chat_id=author, text=text)
+
 
 
 __all__ = [
@@ -95,4 +118,5 @@ __all__ = [
     'send_audio',
     'send_video',
     'delete_file',
+    'send_answer',
 ]
